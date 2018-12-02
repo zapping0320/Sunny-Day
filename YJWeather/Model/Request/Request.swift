@@ -194,6 +194,8 @@ class Request: RequestProtocol {
         guard let url = createURL(.forecastGrib) else {
             return
         }
+        let headers = ["Content-Type": "application/json"]
+        
         let (nx, ny) = coordinates.convertToGrid(latitude: latitude, longitude: longitude)
         let (baseDate, baseTime) = weather.getBaseDateTime(.realtime)
         let parameters: Parameters = [
@@ -204,7 +206,7 @@ class Request: RequestProtocol {
             "_type": "json",
             "numOfRows": 10
         ]
-        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             if let data = self.weather.extractData(.realtime, data: response.result.value) {
                 completion(true, data, nil)
             } else {
@@ -217,6 +219,7 @@ class Request: RequestProtocol {
         guard let url = createURL(.forecastTimeData) else {
             return
         }
+        let headers = ["Content-Type": "application/json"]
         let (nx, ny) = coordinates.convertToGrid(latitude: latitude, longitude: longitude)
         let (baseDate, baseTime) = weather.getBaseDateTime(.realtime)
         let parameters: Parameters = [
@@ -227,7 +230,7 @@ class Request: RequestProtocol {
             "_type": "json",
             "numOfRows": 30
         ]
-        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             if let data = self.weather.extractData(.sky, data: response.result.value) {
                 completion(true, data, nil)
             } else {
@@ -240,6 +243,7 @@ class Request: RequestProtocol {
         guard let url = createURL(.forecastSpaceData) else {
             return
         }
+        let headers = ["Content-Type": "application/json"]
         let (nx, ny) = coordinates.convertToGrid(latitude: latitude, longitude: longitude)
         let (baseDate, baseTime) = weather.getBaseDateTime(.local)
         let parameters: Parameters = [
@@ -263,6 +267,7 @@ class Request: RequestProtocol {
         guard let url = createURL(.getNearbyMsrstnList) else {
             return
         }
+        let headers = ["Content-Type": "application/json"]
         let (tmX, tmY) = coordinates.convertToPlaneRect(latitude: latitude, longitude: longitude)
         let parameters: Parameters = [
             "tmX": tmX,
@@ -270,7 +275,7 @@ class Request: RequestProtocol {
             "numOfRows": 1,
             "_returnType": "json"
         ]
-        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             if let data = self.airPollution.extractData(.measuringStation, data: response.result.value) {
                 completion(true, data, nil)
             } else {
@@ -283,6 +288,7 @@ class Request: RequestProtocol {
         guard let url = createURL(.getMsrstnAcctoRltmMesureDnsty) else {
             return
         }
+        let headers = ["Content-Type": "application/json"]
         var stationNames = stationNames
         let stationName = stationNames.removeFirst()
         let parameters: Parameters = [
@@ -292,7 +298,7 @@ class Request: RequestProtocol {
             "numOfRows": 10,
             "_returnType": "json"
         ]
-        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             if let data = self.airPollution.extractData(.realtime, data: response.result.value) {
                 completion(true, data, nil)
             } else {
