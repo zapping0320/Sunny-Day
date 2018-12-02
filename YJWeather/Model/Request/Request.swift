@@ -254,7 +254,7 @@ class Request: RequestProtocol {
             "_type": "json",
             "numOfRows": 112
         ]
-        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             if let data = self.weather.extractData(.local, data: response.result.value) {
                 completion(true, data, nil)
             } else {
