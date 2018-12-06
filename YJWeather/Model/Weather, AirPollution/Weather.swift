@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 class Weather {
     // MARK: - Custom enumerations
@@ -150,60 +151,90 @@ class Weather {
         return dateString
     }
     /// 데이터를 추출하여 변환후 반환한다
-    func extractData(_ type: WeatherType, data: Any?) -> Any? {
-        guard let result = data as? [String: Any],
-            let response = result["response"] as? [String: Any],
-            let body = response["body"] as? [String: Any],
-            let items = body["items"] as? [String: Any],
-            let item = items["item"] as? [[String: Any]] else {
-                return nil
+    func extractData(_ type: WeatherType, data: Data?) -> (resultCode : String, item :Any?) {
+        do {
+            let responseJson = try JSON(data: data!)
+            let resultCode = responseJson["response"]["header"]["resultCode"].string
+            let items = responseJson["response"]["body"]["items"]["item"]
+            
+            if resultCode == "99" || items == false {
+                return ("99",nil)
+            }
+           
+            switch type {
+            case .sky:
+                let results = extractSkyData(items)
+                return (results.resultCode, results.result)
+            case .realtime:
+                let results = extractRealtimeData(items)
+                return (results.resultCode, results.result)
+            case .local:
+                let results = extractLocalData(items)
+                return (results.resultCode, results.result)
+            }
+            
         }
-        switch type {
-        case .sky:
-            return extractSkyData(item)
-        case .realtime:
-            return extractRealtimeData(item)
-        case .local:
-            return extractLocalData(item)
+        catch {
+            return ("99",nil)
         }
     }
     /// 초단기 예보 데이터에서 sky 값을 추출하여 변환후 문자열을 반환한다
-    private func extractSkyData(_ data: Any) -> String? {
-        guard let items = data as? [[String: Any]] else {
-            return nil
-        }
-        for item in items {
-            if let category = item["category"] as? String,
-                category != "SKY" {
+    private func extractSkyData(_ items: JSON) -> (resultCode : String, result: String?){
+//        guard let items = data as? [[String: Any]] else {
+//            return ("99",nil)
+//        }
+        //let count = items.
+//        let item = items[0]
+//        let category = item["category"].stringValue
+//        if category != "SKY" {
+//            return ("99", nil)
+//        }
+        
+        let itemlist: Array<JSON> = items.arrayValue
+        
+        for item in itemlist {
+            let category = item["category"].stringValue
+            if category != "SKY" {
                 continue
             }
-            guard let skyValue = item["fcstValue"] as? Int else {
-                return nil
-            }
+            
+            let skyValue = item["fcstValue"].int
+//            if let category = item["category"] as? String,
+//                category != "SKY" {
+//                continue
+//            }
+//            guard let skyValue = item["fcstValue"] as? Int else {
+//                return ("99",nil)
+//            }
             // 하늘상태
             if skyValue == 1 {
-                return "맑음"
+                return ("00","맑음")
             } else if skyValue == 2 {
-                return "구름조금"
+                return ("00","구름조금")
             } else if skyValue == 3 {
-                return "구름많음"
+                return ("00","구름많음")
             } else if skyValue == 4 {
-                return "흐림"
+                return ("00", "흐림")
             }
         }
-        return nil
+        return ("99",nil)
     }
     /// 초단기 실황 데이터를 추출하여 변환후 반환한다
-    private func extractRealtimeData(_ data: Any) -> WeatherRealtimeData? {
-        guard let items = data as? [[String: Any]] else {
-            return nil
-        }
+    private func extractRealtimeData(_ items: JSON) -> (result:WeatherRealtimeData? , resultCode : String){
+//        guard let items = data as? [[String: Any]] else {
+//            return (nil, "99")
+//        }
         var weatherRealtimeData = WeatherRealtimeData()
-        for item in items {
-            guard let category = item["category"] as? String,
-                let value = item["obsrValue"] as? Double else {
-                    return nil
-            }
+        let itemlist: Array<JSON> = items.arrayValue
+        
+        for item in itemlist {
+        //for item in items {
+//            guard let category = item["category"] as? String,
+//                let value = item["obsrValue"] as? Double else {
+//                    return (nil, "99")
+//            }
+            let category = item["category"].stringValue
+            let value = item["obsrValue"].doubleValue
             switch category {
             case "T1H":
                 weatherRealtimeData.t1h = convertToRealtimeString(.t1h, value: value)
@@ -229,24 +260,31 @@ class Weather {
                 continue
             }
         }
-        return weatherRealtimeData
+        return (weatherRealtimeData, "00")
     }
     /// 초단기 실황 데이터를 추출하여 변환후 반환한다
-    private func extractLocalData(_ data: Any) -> [WeatherLocalData]? {
-        guard let items = data as? [[String: Any]] else {
-            return nil
-        }
+    private func extractLocalData(_ items: JSON) -> (result:[WeatherLocalData]? , resultCode : String){
+//        guard let items = data as? [[String: Any]] else {
+//            return (nil, "99")
+//        }
         var weatherLocals = [WeatherLocalData]()
         var weatherLocalData = WeatherLocalData()
         var date = ""
         var time = ""
-        for item in items {
-            guard let forecastDate = item["fcstDate"],
-                let forecastTime = item["fcstTime"],
-                let category = item["category"] as? String,
-                let value = item["fcstValue"] as? Double else {
-                    return nil
-            }
+        //for item in items {
+        let itemlist: Array<JSON> = items.arrayValue
+        
+        for item in itemlist {
+//            guard let forecastDate = item["fcstDate"],
+//                let forecastTime = item["fcstTime"],
+//                let category = item["category"] as? String,
+//                let value = item["fcstValue"] as? Double else {
+//                    return (nil, "99")
+//            }
+            let forecastDate = item["fcstDate"]
+            let forecastTime = item["fcstTime"]
+            let category = item["category"].stringValue
+            let value = item["fcstValue"].doubleValue
             if date != "\(forecastDate)" || time != "\(forecastTime)" {
                 if !date.isEmpty {
                     weatherLocals.append(weatherLocalData)
@@ -316,7 +354,7 @@ class Weather {
                 continue
             }
         }
-        return weatherLocals
+        return (weatherLocals, "00")
     }
     /// 추출한 데이터를 문자열로 변환한다
     private func convertToLocalString(_ type: LocalCategoryType, value: Double) -> String {
