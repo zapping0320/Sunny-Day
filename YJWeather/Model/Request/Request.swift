@@ -208,8 +208,11 @@ class Request: RequestProtocol {
         ]
         Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             let results = self.weather.extractData(.realtime, data: response.data)
-            if results.resultCode != "99"{
+            if results.resultCode == "00"{
                 completion(true, results.item!, nil)
+            }
+            else if results.resultCode == "99" {
+                completion(false, nil, RequestError.outOfValidLocation)
             }
             else
             {
@@ -235,8 +238,11 @@ class Request: RequestProtocol {
         ]
         Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             let results = self.weather.extractData(.sky, data: response.data)
-            if results.resultCode != "99" {
+            if results.resultCode == "00" {
                 completion(true, results.item!, nil)
+            }
+            else if results.resultCode == "99" {
+                completion(false, nil, RequestError.outOfValidLocation)
             }
             else {
                 completion(false, nil, RequestError.requestFailed)
@@ -262,10 +268,13 @@ class Request: RequestProtocol {
         ]
         Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             let results = self.weather.extractData(.local, data: response.data)
-            if results.resultCode != "99" {
+            if results.resultCode == "00" {
                 completion(true, results.item!, nil)
+            }else if results.resultCode == "99" {
+                completion(false, nil, RequestError.outOfValidLocation)
+                
             } else {
-
+                
                 completion(false, nil, RequestError.requestFailed)
             }
         }
