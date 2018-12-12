@@ -283,27 +283,14 @@ class Request: RequestProtocol {
             "numOfRows": 1,
             "_returnType": "json"
         ]
-//        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
-//            if let data = self.airPollution.extractData(.measuringStation, data: response.result.value) {
-//                completion(true, data, nil)
-//            } else {
-//                completion(false, nil, RequestError.requestFailed)
-//            }
-//        }
         Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
             let data = self.airPollution.extractData(.realtime, data: response.data)
             if data != nil {
-//            if let data = self.airPollution.extractData(.realtime, data: response.result.value) {
                 completion(true, data, nil)
             }
             else {
                 completion(false, nil, RequestError.requestFailed)
             }
-//            if results.resultCode != "99" {
-//                completion(true, results.item!, nil)
-//            } else {
-//                completion(false, nil, RequestError.requestFailed)
-//            }
         }
     }
     /// 측정소별 실시간 측정정보를 호출하는 메서드
@@ -322,7 +309,6 @@ class Request: RequestProtocol {
             "_returnType": "json"
         ]
         Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: headers).responseJSON { (response) in
-//            if let data = self.airPollution.extractData(.realtime, data: response.result.value) {
             let data = self.airPollution.extractData(.realtime, data: response.data)
             if data != nil {
                 completion(true, data, nil)
@@ -334,15 +320,5 @@ class Request: RequestProtocol {
             }
             self.requestMsrstnAcctoRltmMesureDnsty(stationNames, completion: completion)
         }
-//            if results.resultCode != "99" {
-//                completion(true, results.item!, nil)
-//            } else {
-//                if stationNames.isEmpty {
-//                    completion(false, nil, RequestError.requestFailed)
-//                    return
-//                }
-//                self.requestMsrstnAcctoRltmMesureDnsty(stationNames, completion: completion)
-//            }
-//        }
     }
 }
