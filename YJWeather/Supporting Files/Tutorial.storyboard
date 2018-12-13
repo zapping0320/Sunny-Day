@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -27,13 +27,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8mv-Va-fgu">
-                                <rect key="frame" x="132.5" y="528" width="55" height="30"/>
+                                <rect key="frame" x="125" y="528" width="70" height="35"/>
+                                <color key="backgroundColor" red="0.38343998930000001" green="1" blue="0.40487929480000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="2WI-qc-mjz"/>
+                                    <constraint firstAttribute="height" constant="35" id="2WI-qc-mjz"/>
+                                    <constraint firstAttribute="width" constant="70" id="jgG-YK-0t0"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="NanumSquareRoundOTFEB" family="NanumSquareRoundOTF" pointSize="15"/>
                                 <state key="normal" title="시작하기">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="titleShadowColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="startAction:" destination="Cet-1O-CbT" eventType="touchUpInside" id="s3R-cS-6gO"/>
@@ -427,7 +430,7 @@
                             <constraint firstItem="lSd-4v-TDl" firstAttribute="leading" secondItem="ag7-hK-E1r" secondAttribute="leading" constant="10" id="p68-ns-utI"/>
                             <constraint firstItem="lSd-4v-TDl" firstAttribute="centerX" secondItem="ag7-hK-E1r" secondAttribute="centerX" id="tQ0-qh-3Xz"/>
                             <constraint firstItem="3d7-Ud-tgb" firstAttribute="centerX" secondItem="ag7-hK-E1r" secondAttribute="centerX" id="vOg-JL-hSf"/>
-                            <constraint firstItem="ag7-hK-E1r" firstAttribute="bottom" secondItem="8mv-Va-fgu" secondAttribute="bottom" constant="10" id="yZT-oa-JUY"/>
+                            <constraint firstItem="ag7-hK-E1r" firstAttribute="bottom" secondItem="8mv-Va-fgu" secondAttribute="bottom" constant="5" id="yZT-oa-JUY"/>
                             <constraint firstItem="ca7-bc-caQ" firstAttribute="centerX" secondItem="ag7-hK-E1r" secondAttribute="centerX" id="yee-53-ECw"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="ag7-hK-E1r"/>
