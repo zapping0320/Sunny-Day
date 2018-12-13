@@ -17,7 +17,8 @@ class SearchViewController: UIViewController {
     @IBOutlet var searchBar: UISearchBar! {
         didSet {
             searchBar.delegate = self
-            searchBar.placeholder = "읍면동을 입력하세요."
+            searchBar.placeholder = "읍면동을 입력하세요. 공백/쉽표로 AND검색이 가능합니다"
+            
         }
     }
     @IBOutlet var tableView: UITableView! {
@@ -54,11 +55,35 @@ class SearchViewController: UIViewController {
     private func filterContentForSearchText(_ searchText: String) {
         // searchBar.text가 존재할 경우 umds에서 searchText가 포함된 배열을 반환한다
         filteredUmdData = umds.filter { (umdData) -> Bool in
-            return isFiltering() ? umdData.name.contains(searchText) : true
+            return isFiltering() ?  containsText(umdData.name, searchText): true
         }
         // 위 결과에 따라 searchResultLabel.text 를 변경 후 tableView를 리로드한다
         searchResultLabel.text = (filteredUmdData.count == 0) ? "검색 결과가 없습니다." : "\(filteredUmdData.count)개의 결과가 있습니다."
         tableView.reloadData()
+    }
+    
+    private func containsText(_ name:String, _ searchText:String) -> Bool {
+        //search text word list
+        var searchWords:[String] = []
+        if searchText.contains(" ") {
+            searchWords = searchText.components(separatedBy: " ")
+        }
+        else if searchText.contains(",") {
+            searchWords = searchText.components(separatedBy: ",")
+        }
+        
+        if searchWords.count > 1 {
+            for word in searchWords {
+                if word != "" && name.contains(word) == false {
+                    return false
+                }
+            }
+            
+            return true
+        }
+        else {
+            return name.contains(searchText)
+        }
     }
     /// MainViewController로 되돌아간다
     @objc private func goBack(_ sender: Any) {
