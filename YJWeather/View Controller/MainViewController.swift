@@ -132,6 +132,7 @@ class MainViewController: UIViewController {
         // removeButton이 선택된 상태라면 편집 작업을 시작하고 tableView 클릭을 비활성화 한다
         // 선택된 상태가 아니라면 편집 작업을 종료하고 tableView 클릭을 활성화 한다
         if removeButton.isSelected {
+            self.tableView.isEditing = true
             dataSource.forEach { (content) in
                 // 현재 위치 데이터 객체를 제외하고 편집 가능
                 if content !== dataSource.first {
@@ -142,6 +143,7 @@ class MainViewController: UIViewController {
             }
             tableView.allowsSelection = false
         } else {
+            self.tableView.isEditing = false
             dataSource.forEach { (content) in
                 content.isEditing = false
             }
@@ -251,5 +253,30 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let content = dataSource[indexPath.row]
         content.expanded = !content.expanded
         tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+    
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return indexPath.row > 0
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let index = sourceIndexPath.row
+        let movedObject = self.dataSource[index]
+        self.locations = self.locationDAO.fetch()
+        let data = self.locations[index-1]
+        if self.locationDAO.delete(data) {
+            self.dataSource.remove(at: index)
+        }
+        
+        self.locationDAO.insert(data)
+        self.dataSource.insert(movedObject, at: destinationIndexPath.row)
     }
 }
