@@ -102,7 +102,7 @@ class Request: RequestProtocol {
             }
             // totlaDataList를 등록순으로 정렬후 전달한다
             totalDataList.sort { (first, second) -> Bool in
-                return first.regdate < second.regdate
+                return first.listIndex < second.listIndex
             }
             if let firstTotalData = firstTotalData {
                 totalDataList.insert(firstTotalData, at: 0)
@@ -118,6 +118,7 @@ class Request: RequestProtocol {
             let longitude = data.longitude else {
                 return
         }
+        let listIndex = data.listIndex
         var weatherRealtime = WeatherRealtimeData()
         var weatherLocals = [WeatherLocalData]()
         var airPollution = AirPollutionData()
@@ -181,7 +182,7 @@ class Request: RequestProtocol {
             if requestError != nil {
                 completion(false, nil, requestError)
             } else {
-                let totalData = TotalData(location: location, regdate: regdate, weatherRealtime: weatherRealtime, weatherLocals: weatherLocals, airPollution: airPollution)
+                let totalData = TotalData(location: location, regdate: regdate,listIndex: listIndex, weatherRealtime: weatherRealtime, weatherLocals: weatherLocals, airPollution: airPollution)
                 completion(true, totalData, nil)
             }
         }

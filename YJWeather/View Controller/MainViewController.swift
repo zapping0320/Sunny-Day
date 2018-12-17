@@ -268,15 +268,23 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        //UI Update
         let index = sourceIndexPath.row
         let movedObject = self.dataSource[index]
-        self.locations = self.locationDAO.fetch()
-        let data = self.locations[index-1]
-        if self.locationDAO.delete(data) {
-            self.dataSource.remove(at: index)
-        }
-        
-        self.locationDAO.insert(data)
+        self.dataSource.remove(at: index)
         self.dataSource.insert(movedObject, at: destinationIndexPath.row)
+        //data Update
+        self.locations = self.locationDAO.fetch()
+        for i in 0..<self.locations.count {
+            var data = self.locations[i]
+            for j in 0..<self.dataSource.count {
+                let uiData = self.dataSource[j]
+                if data.location == uiData.totalData.location {
+                    data.listIndex = Int16(j)
+                    break
+                }
+            }
+            self.locationDAO.update(data)
+        }
     }
 }

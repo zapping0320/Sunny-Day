@@ -15,4 +15,5 @@ struct LocationData {
     var longitude: Double?  // 경도
     var regdate: Date?    // 생성날짜
     var objectID: NSManagedObjectID?    // 원본 LocationMO 객체를 참조하기 위한 속성
+    var listIndex: Int16 = 0
 }

@@ -27,7 +27,7 @@ class LocationDAO {
         // 요청 객체 생성
         let fetchRequest: NSFetchRequest<LocationMO> = LocationMO.fetchRequest()
         // 등록순으로 정렬하도록 정렬 객체 생성
-        let regdateAsc = NSSortDescriptor(key: "regdate", ascending: true)
+        let regdateAsc = NSSortDescriptor(key: "listIndex", ascending: true)
         fetchRequest.sortDescriptors = [regdateAsc]
         do {
             let result = try context.fetch(fetchRequest)
@@ -36,11 +36,12 @@ class LocationDAO {
                 // LocationData 객체를 생성
                 var data = LocationData()
                 // LocationMO 프로퍼티 값을 LocationData의 프로퍼티로 복사한다.
-                data.location = object.location
-                data.latitude = object.latitude
-                data.longitude = object.longitude
-                data.regdate = object.regdate
-                data.objectID = object.objectID
+                data.location   = object.location
+                data.latitude   = object.latitude
+                data.longitude  = object.longitude
+                data.regdate    = object.regdate
+                data.objectID   = object.objectID
+                data.listIndex  = object.listIndex
                 // LocationData 객체를 locations 배열에 추가한다.
                 locations.append(data)
             }
@@ -93,6 +94,7 @@ class LocationDAO {
         }
         // 수정된 값을 복사한다.
         object.location = data.location
+        object.listIndex = data.listIndex
         if let latitude = data.latitude, let longitude = data.longitude {
             object.latitude = latitude
             object.longitude = longitude
