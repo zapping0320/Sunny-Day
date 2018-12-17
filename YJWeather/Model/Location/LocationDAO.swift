@@ -51,6 +51,14 @@ class LocationDAO {
     }
     /// 새로운 위치 데이터를 추가하는 메서드
     func insert(_ data: LocationData) {
+        var locationCount:Int = 0
+        let fetchRequest: NSFetchRequest<LocationMO> = LocationMO.fetchRequest()
+        do {
+            let result = try context.fetch(fetchRequest)
+            locationCount = result.count + 1
+        }catch {
+        }
+        
         // 관리 객체 인스턴스 생성
         guard let object = NSEntityDescription.insertNewObject(forEntityName: "Location", into: context) as? LocationMO else {
             return
@@ -62,6 +70,7 @@ class LocationDAO {
             object.longitude = longitude
         }
         object.regdate = data.regdate
+        object.listIndex = Int16(locationCount)
         // 영구 저장소에 변경사항을 반영한다.
         do {
             try context.save()
